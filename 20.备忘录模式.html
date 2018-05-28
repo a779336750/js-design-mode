@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div class="news-wraper">
+		<li>新闻1</li>
+		<li>新闻2</li>
+		<li>新闻3</li>
+		<li>新闻4</li>
+		<li>新闻5</li>
+	</div>
+	<button class="previous">previous</button>
+	<button class="next">next</button>
+	<script type="text/javascript">
+
+		// 备忘录模式
+		// 定义：在不破坏封装性的前提下，在对象之外捕获和保存该对象的内部状态以便日后使用或恢复到以前的状态
+		var previous = document.getElementsByClassName('previous')[0];
+		var next = document.getElementsByClassName('next')[0];
+		var news_wraper = document.getElementsByClassName('news-wraper')[0];
+		var page = 0;
+		var getPage = function () {
+			var cache = {};
+			return function(page) {
+				console.log(cache);
+				if (cache[page]) {
+					showPage(cache[page]);
+				}else {
+					var data = getData(page);
+					cache[page] = data;
+					showPage(cache[page]);
+				}
+			}
+		}();
+		
+		function showPage(data) {
+			var news_list = document.createDocumentFragment();
+			for (i in data) {
+				var news_itm = document.createElement('li');
+				news_itm.innerHTML = '新闻'+data[i];
+				news_list.appendChild(news_itm);
+			}
+			news_wraper.innerHTML = '';
+			news_wraper.appendChild(news_list);
+		}
+		function getData(p) {
+			return [p+1,p+2,p+3,p+4,p+5];
+		}
+		previous.onclick = function(e) {
+			// showPage([1,2,3,4]);
+			getPage(--page);
+		};
+		next.onclick = function(e) {
+			// showPage([1,2,3,4]);
+			getPage(++page);
+		};
+	</script>
+</body>
+</html>

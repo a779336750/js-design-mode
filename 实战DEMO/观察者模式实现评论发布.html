@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div >
+		新闻数<span id="news_num"></span>
+		<br>
+		<ul id="news_wraper">
+			
+		</ul>
+		<textarea id="input_message"></textarea>
+		<br>
+		<button id="submit">提交</button>
+	</div>
+	<script type="text/javascript">
+			var Observer = (function(){
+			var _message = [];
+			return {
+				register:function(type,fn) {
+							if (!_message[type] === 'undefined') {
+								_message[type].push(fn);
+							}else {
+								_message[type] = [fn];
+							}
+						},
+				fire:function(type,args) {
+					if (!_message[type]) {
+						return;
+					}
+					var i = 0;
+					var len = _message[type].length;
+					var event = {
+						type:type,
+						args:args||{}
+					};
+					for (; i < len; i++) {
+						_message[type][i].call(this,event);
+					}
+
+				},
+				remove:function(type,fn) {
+					if (!_message[type] instanceof Array) {
+						return;
+					}
+					var i = _message[type].length;
+					for (; i >= 0; i--) {
+						_message[type][i] === fn&&_message[type].splice(i,1);
+					}
+				},
+			}
+		})();
+
+		function $(id) {
+			return document.getElementById(id);
+		}
+		(function(){
+			function addItem(e) {
+				var news_wraper = $('news_wraper');
+				var news_num = $('news_num');
+				var news_item = document.createElement('li');
+				news_item.innerHTML = e.args.news;
+				news_wraper.appendChild(news_item);
+				if (!news_num.innerHTML) {
+					news_num.innerHTML = 1;
+				}else {
+					news_num.innerHTML = parseInt(news_num.innerHTML)+1;
+				}
+			}
+			Observer.register('addComment',addItem);
+
+
+		})();
+
+		(function(){
+			$('submit').onclick = function() {
+				Observer.fire('addComment',{news:$('input_message').value});
+			}	
+		})();
+	</script>
+</body>
+</html>

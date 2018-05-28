@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<!-- 模块化：将复杂的系统分解为高内聚，低耦合的模块。使系统变得可控，可维护，可拓展 ，提高复用率-->
+	<script type="text/javascript">
+		var F = F||{};
+		// 模块管理器：
+		F.define = function(str,fn) {
+				var parent = old = this;
+				var parts = str.split('.'),
+					// parent = old = this,
+					i,len;
+				
+				if (parts[0] === 'F') {
+					parts = parts.slice(1);
+				}
+				if (parts[0] === 'define' || parts[0] === 'module') {
+					return;
+				}
+
+				for (i = 0,len = parts.length; i < len; i++) {
+					if (typeof parent[parts[i]] === 'undefined') {
+						parent[parts[i]] = {};
+					}
+					old = parent;
+					parent = parent[parts[i]];
+				}
+				if (fn) {
+					old[parts[--i]] = fn();
+				}
+				return this;
+			};
+
+		// 调用模块方法
+		F.module = function () {
+			var args = [].slice.call(arguments),
+				fn = args.pop(),
+				parts = args[0]&&args[0] instanceof Array?args[0]:args,
+				modules = [],
+				modIDs = '',
+				i = 0,
+				ilen = parts.length,
+				parent,j,len; 
+				while(i < ilen) {
+					if (typeof parts[i] === 'string') {
+						parent = this;
+						modIDs = parts[i].replace(/^F\./,'').split('.');
+						for (j = 0,jlen = modIDs.length; j < jlen; j++) {
+							parent = parent[modIDs[j]] || false;
+						}
+						modules.push(parent);
+					}else {
+						modules.push(parts[i]);
+					}
+					i++;
+				}
+				fn.apply(null,modules);
+		}
+		F.define('say',function(){
+			return {
+				say:function() {
+					console.log('say');
+				}
+			}
+		});
+		F.define('say.sayHi',function(){
+			return {
+				sayHi:function() {
+					console.log('hi');
+				}
+			}
+		});
+		F.module('say',function(say){
+			console.log(say);
+		});
+		F.module('say.sayHi',function(say){
+		});
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="news-wraper">
+		<li>新闻1</li>
+		<li>新闻2</li>
+		<li>新闻3</li>
+		<li>新闻4</li>
+		<li>新闻5</li>
+	</div>
+	<button class="previous">previous</button>
+	<button class="next">next</button>
+	<script type="text/javascript">
+		// 迭代器模式
+		// 定义：在不暴露对象内部结构的同时，可以顺序地访问聚合对象内部的元素
+		var Iterator = function(items,containter) {
+			var container = container&&document.getElementById(container)||document,
+				items = container.getElementsByTagName(items),
+				length = items.length,
+				splice = [].splice,
+				index = 0;
+			return {
+				fisrt:function(){
+					return items[0];
+				},
+				last:function(){
+					index = length-1;
+					return items[length-1]
+				},
+				pre:function(){
+					if (--index > 0 ) {
+						return items[index];
+					}else {
+						index = 0;
+						return null;
+					}
+				},
+				next:function(){
+					if (++index >= length ) {
+						index = length-1;
+						return null;
+					}else {
+						return items[index];
+					}	
+				},
+				get:function(num){
+					if (num>=0 && num<length ) {
+						index  = num;
+						return items[num];
+					}
+				},
+				dealEach:function(fn){
+					var args = splice.call(arguments,1);
+					for (var i = 0; i < length; i++) {
+						fn.apply(items[i],args);
+					}
+				},
+				dealItem:function(fn,num){
+					var args = splice.call(arguments,2);
+					fn.apply(items[num],args);
+				},
+				dealExclusive:function(num,allFn,numFn){
+					this.dealEach(allFn);
+					if (Object.prototype.toString.call(num) === '[object Array]') {
+						for (var i = 0; i < num.length; i++) {
+							this.dealItem(numFn,i);
+						}
+					}else {
+						this.dealItem(numFn,num);
+					}
+				}
+			}
+
+		}
+
+		var iterator = new Iterator('li','news-wraper');
+		console.log(iterator.get(2));
+		console.log(iterator.next());
+		console.log(iterator.next());
+		function changeColor(color) {
+			this.style.color = color;
+		}
+		function changeAll() {
+			console.log('没被排除的：'+this.innerHTML);
+
+		}
+		function changeExclusice() {
+			console.log('被排除的：'+this.innerHTML);
+
+		}
+		iterator.dealEach(changeColor,'green');
+		iterator.dealItem(changeColor,3,'black');
+		iterator.dealExclusive(3,changeAll,changeExclusice);
+	</script>
+</body>
+</html>

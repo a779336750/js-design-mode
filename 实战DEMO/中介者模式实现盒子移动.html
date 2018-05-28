@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		.box {
+			width: 100px;
+			height: 100px;
+			background-color: green;
+			-webkit-border-radius: 20px;
+			        border-radius: 20px;
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<div class="wraper">
+		
+	</div>
+	<!--中介者模式 -->
+	<!-- 定义： -->
+	<script type="text/javascript">
+		var agent = function () {
+			var _message = [];
+			return {
+				register:function(type,fn) {
+					if (!_message[type]) {
+						_message[type] = [];
+						_message[type].push(fn);
+					}else {
+						_message[type].push(fn);
+					}
+				},
+				send:function(type) {
+					if (!_message[type]) {
+						return;
+					}
+					var len = _message[type].length;
+					for (var i = 0; i < len; i++) {
+						_message[type][i]();
+					}
+				}
+			}
+		}();
+
+		function Box(parent) {
+			this.left = 0;
+			this.top = 0;
+			this.parent = parent;
+			this.box = document.createElement('div');
+			this.box.className = 'box';
+			this.parent.appendChild(this.box);
+			if (!this.parent.style.position || this.parent.style.position == 'static') {
+				this.parent.style.position = 'relative';
+			}
+			this.register();
+		}
+		Box.prototype.moveLeft = function() {
+			var dom = document.getElementsByClassName('box')[0];
+			if (!dom.style.left) {
+				dom.style.left = '0px';
+			}
+			dom.style.left = parseInt(dom.style.left)-10+'px'; 
+		};
+		Box.prototype.moveUp = function() {
+			var dom = document.getElementsByClassName('box')[0];
+			if (!dom.style.top) {
+				dom.style.top = '0px';
+			}
+			dom.style.top = parseInt(dom.style.top)-10+'px'; 
+		};
+		Box.prototype.moveRight = function() {
+			var dom = document.getElementsByClassName('box')[0];
+			if (!dom.style.left) {
+				dom.style.left = '0px';
+			}
+			dom.style.left = parseInt(dom.style.left)+10+'px'; 
+		};
+		Box.prototype.moveDown = function() {
+			var dom = document.getElementsByClassName('box')[0];
+			if (!dom.style.top) {
+				dom.style.top = '0px';
+			}
+			dom.style.top = parseInt(dom.style.top)+10+'px'; 
+		};
+		Box.prototype.register = function() {
+			agent.register('moveLeft',this.moveLeft);
+			agent.register('moveRight',this.moveRight);
+			agent.register('moveUp',this.moveUp);
+			agent.register('moveDown',this.moveDown);
+		}
+		var box = new Box(document.getElementsByClassName('wraper')[0]);
+		// agent.send('moveRight');
+		document.body.onkeydown = function(ev){
+		   ev = ev || window.event;//ie不支持function参数ev
+		   console.log(ev.keyCode || ev.which);
+		   
+		   switch(ev.keyCode || ev.which) {
+		   	 case 39:
+		   	 	agent.send('moveRight');
+		   	 	break;
+		   	 case 38:
+		   	 	agent.send('moveUp');
+		   	 	break;
+		   	 case 40:
+		   	 	agent.send('moveDown');
+		   	 	break;
+		   	 case 37:
+		   	 	agent.send('moveLeft');
+		   	 	break;
+		   	 default:
+		   	 	return;
+		   };
+
+		  }
+	</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 状态模式：
+		// 定义：当一个对象的内部状态发生改变时，他的行为也会产生改变。看起来像是改变了对象
+		// 思路：
+		// 创建一个状态对象，内部保存状态对象，然后定义每个状态对应的行为。
+		// 最后状态对象返回一个接口对象，可以对状体对象的状态进行修改和调用
+
+
+		SuperMarry = (function() {
+			var current_sate = [];
+			var state = {
+				jump: function() {
+					console.log('跳起来！');
+				},
+				run: function() {
+					console.log('跑起来！');
+				}
+			}
+
+			var action = {
+				change:function() {
+					var args = arguments;
+					for (var i = 0; i < args.length; i++) {
+						current_sate[args[i]] = true;
+					}
+					return this;
+				},
+				goes:function() {
+					for(i in current_sate) {
+						console.log(i);
+					}
+					return this;
+				}
+			};
+			return {
+				change:action.change,
+				goes:action.goes
+			};
+		})();
+
+		console.log(SuperMarry);
+		SuperMarry.change('jump','run').goes();
+
+	</script>
+</body>
+</html>

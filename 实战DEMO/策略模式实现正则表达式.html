@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 策略模式：
+		// 定义：将定义的的算法封装起来，使其相互之间可以替换。不需要管理状态，状态之间没有依赖关系。
+
+
+		var myRet = (function () {
+			var rets = {
+				phone:function(arr) {
+					var psw_ret = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+					return psw_ret.test(arr);
+				},
+				password:function(arr) {
+					console.log('使用策略2 '+'参数：'+arr);
+				},
+				account:function(arr) {
+					console.log('使用策略3 '+'参数：'+arr);
+				}
+			}
+
+			return {
+				check:function(s,arr) {
+					return rets[s]&&rets[s](arr);
+				},
+				addStrategy:function(name,fn) {
+					rets[name] = fn;
+				}
+			} 
+		})();
+		myRet.addStrategy('password2',function(){
+			console.log('使用策略password2');
+		});
+		
+		myRet.check('password2','15626253779');
+		console.log(myRet.check('phone','15626253779'));
+
+	</script>
+</body>
+</html>

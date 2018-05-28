@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="new-wraper">
+		
+	</div>
+	<button id="get_news">获取新闻</button>
+	<script type="text/javascript">
+		// 职责链模式：
+		// 定义：解决请求的发送者和请求的接收者之间的耦合度。通过职责链上的多个对象对请求分解流程。实现在多个对象之间传递数据。直到最后i一个对象完成请求。
+		// 获取新闻数据
+		function getData(dom) {
+			// var xhr = new XMLHttpRequest(),
+			// 	url = '';
+			// 	xhr.onload = function(event) {
+			// 		if (xhr.status >= 200 &&xhr.status <= 300||xhr.status == 304) {
+			// 			dealData(xhr.responseText);
+			// 		}else {
+			// 			console.log('请求失败');
+			// 		}
+			// 	}
+
+			setTimeout(function() {
+				var data = {
+					new1:'news1',
+					new2:'news2',
+					new3:'news3'
+				}
+				dealData(data,dom)
+			}, 1000);
+		}		
+		// 适配数据
+		function dealData(data,dom) {
+			var dataType = Object.prototype.toString.call(data);
+					if (dataType === '[object Array]') {
+						createNews(data,dom);
+						return;
+					}else if (dataType === '[object Object]') {
+						var new_data = [];
+						for (i in data) {
+							new_data.push(data[i]);
+						}
+						createNews(new_data,dom);
+						return;
+					}else{
+						createNews([data],dom);
+						return;
+					};
+		}
+
+		// 创建新闻模块
+		function createNews(data,dom) {
+			var html = '';
+			for (i in data) {
+				html+= "<li>"+data[i]+"</li>";
+			}
+			dom.innerHTML = html;
+			addOperation(dom);
+		}
+		// 添加交互功能
+		function addOperation(dom) {
+			dom.onclick = function(e) {
+				var event = e||window.event;
+				var target = event.target||window.srcElement;
+				if (target.tagName.toLowerCase() == 'li') {
+					console.log(target.innerHTML);
+				}
+			}
+		}
+		var dom = document.getElementById('new-wraper');
+		// var get_news = document.getElementById('get_news');
+		get_news.onclick = function() {
+			getData(dom);
+		}
+		// createNews(['新闻1','新闻3','新闻2'],dom);
+	</script>
+</body>
+</html>

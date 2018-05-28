@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btn">hello</button>
+	<script type="text/javascript" src="../../../../开发/代码复用/js/myJS.js">
+	</script>
+		<script type="text/javascript">
+			// 参与者模式
+			// 定义：在特定的作用域中执行特定的函数，并将参数原封不动地传递
+			function bind(fn,context,message) {
+				return function() {
+					fn.call(context,arguments[0],message);
+				}
+			}
+			function demoFn(e,message){
+				console.log(this+':你好:'+message);
+			}
+			var message = '帅哥';
+			var bindFn = bind(demoFn,A('#btn')[0],message);
+			A('#btn')[0].addEventListener('click',bindFn);
+			// A('#btn')[0].removeEventListener('click',bindFn);
+			// A('#btn')[0].removeEventListener('click',demoFn);
+
+			var a = function() {};
+			var b = c = a;
+			c.a = 3;
+			console.log(a.a,b.a,c.a);
+		</script>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		body {
+			position: relative;
+		}
+		#to-top {
+			position: absolute;
+			right: 30px;
+			top: 300px;
+			transition: top .4s ease-in-out;
+		}
+		.devider {
+			height: 500px;
+			widows: 200px;
+		}
+	</style>
+</head>
+<body>
+	<button id="to-top">toTop</button>
+	<div class="devider"></div>
+	<div class="devider"></div>
+	<div class="devider"></div>
+	<div class="devider"></div>
+	<div class="devider"></div>
+	<script type="text/javascript" src="../../../../开发/代码复用/js/myJS.js"></script>
+	<script type="text/javascript">
+		// 节流器模式
+		// 对重复的业务逻辑进行节流，执行最后一次操作并取消其他操作，已提高性能
+		// var throttle = function() {
+		// 	var isClear = arguments[0],
+		// 		fn;
+		// 	if (typeof isClear === 'boolean') {
+		// 	    fn = arguments[1];
+		// 		var clear = fn.throttleId&&clearTimeout(fn.throttleId);
+		// 	}else {
+		// 		fn = isClear;
+		// 		param = arguments[1];
+		// 		var p =A.extend({
+		// 			context: null,
+		// 			args: [],
+		// 			time:300
+		// 		},param);
+		// 		arguments.callee(true,fn);
+		// 		fn.throttleId = setTimeout(function(){
+		// 			fn.call(p.context,p.args);
+		// 		},p.time);
+		// 	}
+		// }
+		var toTop = function (args1) {
+			var top = document.body.scrollTop;
+			// console.log(A('#to-top')[0]+'执行开始');
+			A('#to-top')[0].style.top = top+300+'px';
+			console.log('saca');
+		}	
+		A.imageLazyLoad();				
+	 //    function decoration(dom,fn) {
+		// 	var originalEvent = dom.onscroll;
+		// 	if (typeof dom.onscroll === 'function') {
+		// 			dom.onscroll = function () {
+		// 				originalEvent();
+		// 				fn();
+		// 			}
+		// 	}else {
+		// 		dom.onscroll = fn;
+		// 		// console.log(dom1);
+				
+		// 	}
+		// }
+		// 使用装饰者模式,避免覆盖已有的onscroll事件
+		A.decoration(window,'onscroll',function() {
+			A.throttle(toTop,{
+						args: [200,3322],
+						time:100
+				});
+			
+		});
+		// decoration(window,function () {
+		// 	A.throttle(toTop,{
+		// 				args: [200,3322],
+		// 				time:100
+		// 		});
+		// 	console.log('saca');
+		// 	});
+	</script>
+</body>
+</html>

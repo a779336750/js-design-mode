@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// ***********参数适配器***********
+		// *******************************
+		// 可将一些参数格式转换成想要的格式
+		var book = {
+			name:'闲书',
+			writer:'Jason'
+		}
+		function showBook(obj) {
+			var param = {
+				name: 'default_name',
+				price: 'default_price',
+			}
+			//可添加一些默认的参数和原始参数
+			for(i in obj) {
+				param[i] = obj[i]||param[i];
+			}
+			console.log(param);
+		}
+		showBook(book);
+
+		// 数据适配器
+		// 例如将数组适配为对象，因为数组语义性不好
+		arrObjectAdapter(arr) {
+			return {
+				name:arr[0],
+				price:arr[1],
+				writer:arr[2]
+			}
+		}
+
+		// 服务端数据适配器
+		// 有时候服务端传递回来的数据不符合我们的格式，后端有时候无法控制数据的格式。
+		// 比如我们理想的数据是数组，而返回来的数据是对象
+		ajaxAdapter(data) {
+			return [data['key1'],data['key2'],data['key3']]
+		}
+
+
+	</script>
+</body>
+</html>

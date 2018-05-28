@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var TestObj = function(name,id,age) {
+			//对象共有属性
+			this.name = name;
+			//私有属性
+			var privateArr = 'private';
+			//私有方法
+			var privateMethod = function() {
+				console.log('private methods!');
+			};
+			// 特权方法
+			this.getName = function() {
+				console.log(name);
+			}
+			// 构造器
+			var setId = function(){};
+			var setPrice = function(){};
+		}
+		// 共有属性和方法
+		TestObj.prototype = {
+			protoArr:'protoArr',
+			protoMethod:function() {
+				console.log('proto methods!');
+			}
+		}
+		// 类的静态共有属性
+		TestObj.staticPublicArr = 11;
+		// 类的静态共有方法
+		TestObj.staticPublicMethod = function(){
+			console.log(staticPublicMethod!);
+		};
+
+
+
+		var o = new TestObj('dick',1,12);
+		console.log(o.name);
+		o.getName();
+		console.log(o.privateArr);//undefined，无法访问类的私有属性
+		o.protoMethod();
+		
+	</script>
+</body>
+</html>

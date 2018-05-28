@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button class="test_btn">click</button>
+	<script type="text/javascript">
+		// 装饰者模式 
+		// 定义：为一些对象在原有功能不变的情况下，增加一些新的功能而不影响原有功能 
+		var test_btn = document.getElementsByClassName('test_btn')[0];
+		test_btn.onclick = function() {
+			console.log('原有功能！！！');
+		}
+
+		function decoration(dom,fn) {
+			var original_fn = dom.onclick;
+			if (typeof original_fn === 'function') {
+				dom.onclick = function() {
+					original_fn();
+					fn();
+				}
+			}else {
+				dom.onclick = fn();
+			}
+		}
+		decoration(test_btn,function(){
+			console.log('新功能！！！！');
+		});
+	</script>
+</body>
+</html>

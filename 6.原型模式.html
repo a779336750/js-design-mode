@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		function ImgLoops(imgArr,container) {
+			this.imgArr = imgArr;
+			this.container = container;
+		}
+
+		ImgLoops.prototype.createLoops = function() {
+			console.log('创建轮播图！');
+		};
+		ImgLoops.prototype.changeLoops = function() {
+			console.log('切换下张图片！');
+		}
+
+
+		function ScrollLoops(imgArr,container) {
+			ImgLoops.call(this,imgArr,container);
+			this.changeLoops = function() {
+				console.log('滚动切换下张图片！');
+			}
+		}
+		ScrollLoops.prototype = new ImgLoops();
+		function SlideLoops(imgArr,container) {
+			ImgLoops.call(this,imgArr,container);
+			this.changeLoops = function() {
+				console.log('滑动切换下张图片！');
+			}
+		}
+		SlideLoops.prototype = new ImgLoops();
+
+		var loops = new ScrollLoops(['img1.png','img1.png','img1.png'],'container');
+		loops.createLoops();
+		loops.changeLoops();
+
+		var loops2 = new SlideLoops(['img1.png','img1.png','img1.png'],'container');
+		loops.createLoops();
+		loops.changeLoops();
+	</script>
+</body>
+</html>

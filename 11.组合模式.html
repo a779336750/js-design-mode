@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 创建新闻类
+		function News() {
+			this.children = [];
+			this.element = null;
+		}
+		News.prototype = {
+			add:function() {
+				throw new Error('请重新定义add');
+			},
+			init:function() {
+				throw new Error('请重新定义init');
+			},
+			getElement:function() {
+				throw new Error('请重新定义getElement');
+			}
+		}
+		function Container(id,parent) {
+			News.call(this);
+			this.id = id;
+			this.parent = parent;
+			this.init();
+		}
+
+		function protoInherit(obj) {
+			var o = function(){};
+			o.prototype = obj;
+			return new o();
+		}
+		function inherit(subType,superType) {
+			var p = protoInherit(superType.prototype);
+			p.constructor = subType;
+			subType.prototype = p;
+		}
+
+		inherit(Container,News);
+
+		// 创建新闻容器类
+		Container.prototype.init = function() {
+			this.element = document.createElement('ul');
+			this.element.id = this.id;
+			this.element.className = 'new-container';
+		}
+
+		Container.prototype.show = function() {
+			this.parent.appendChild(this.element);
+		}
+		Container.prototype.add = function(child) {
+			this.children.push(child);
+			this.element.appendChild(child.getElement());
+			return this;
+		}
+		
+		Container.prototype.getElement = function() {
+			return this.element;
+		}
+
+		// 创建新闻行类
+		function Item(className) {
+			News.call(this);
+			this.className = className;
+			this.init();
+		}
+		inherit(Item,News);
+		Item.prototype.init = function() {
+			this.element = document.createElement('li');
+			this.element.className = this.className;
+		}
+		Item.prototype.add = function(child) {
+			this.children.push(child);
+			this.element.appendChild(child.getElement());
+			return this;
+		}
+		
+		Item.prototype.getElement = function() {
+			return this.element;
+		}
+
+		// 创建新闻组类
+		function NewGroup(className) {
+			News.call(this);
+			this.className = className;
+			this.init();
+		}
+		inherit(NewGroup,News);
+		NewGroup.prototype.init = function() {
+			this.element = document.createElement('div');
+			this.element.className = this.className;
+		}
+		NewGroup.prototype.add = function(child) {
+			this.children.push(child);
+			this.element.appendChild(child.getElement());
+			return this;
+		}
+		NewGroup.prototype.getElement = function() {
+			return this.element;
+		}
+
+		// 创建新闻基类
+		function BaseNews(className,url,text) {
+			News.call(this);
+			this.children = null;
+			this.className = className;
+			this.url = url;
+			this.text = text;
+			this.init();
+		}
+		inherit(BaseNews,News);
+		BaseNews.prototype.add = function() {};
+		BaseNews.prototype.getElement = function() {
+			return this.element;
+		};
+		BaseNews.prototype.init = function() {
+			this.element = document.createElement('a');
+			var text = document.createTextNode(this.text);
+			this.element.className = this.className;
+			this.element.href = this.url;
+			this.element.appendChild(text);
+
+		};
+
+		var news = new Container('my-news',document.body);
+		// var item = new Item('my-item');
+		// var newGroup = new NewGroup('my-new-group');
+		news.add(
+				new Item('my-item').add(
+					new NewGroup('my-new-group').add(
+						new BaseNews('my-link','www.baiu.com','百度')
+					).add(
+						new BaseNews('my-link','www.baiu.com','百度')
+					)
+				)
+
+		).add(
+				new Item('my-item').add(
+					new NewGroup('my-new-group').add(
+						new BaseNews('my-link','www.baiu.com','百度')
+					)
+				)
+
+		).show();
+	</script>
+</body>
+</html>

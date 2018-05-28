@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btn">hello</button>
+	<script type="text/javascript" src="../../../../开发/代码复用/js/myJS.js">
+	</script>
+		<script type="text/javascript">
+			//myJS库on事件监听api使用了惰性模式实现,减少了if分支，提高了性能
+			A('#btn').on('click',function(){
+				console.log('你好啊');
+				console.log(A('#btn').on);
+			});
+			console.log(A('#btn'));
+
+		</script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 工厂模式*********实例化对象闯将******
+		function person(type,name,id) {
+			switch(type) {
+				case 'man':
+				return new Man(name,id);
+				break;
+				case 'woman':
+				return new Woman(name,id);
+				break;
+				default:
+				break;
+			}
+		}
+
+		function Man(name,id) {
+			this.name = name;
+			this.id = id;
+		}
+		function Woman(name,id) {
+			this.name = name;
+			this.id = id;
+		}
+		var p =  person('woman','dick',12);
+		console.log(p);
+
+		// 工厂模式*********新建对象后包装增强属性和功能******
+		function Transition(band,size,type) {
+			var o = new Object();
+			o.band = band;
+			o.size = size;
+			switch(type){
+				// case '火车':
+				// o.getType = function {
+				// 	console.log('火车');
+				// };
+				// break;
+				case '汽车':
+				o.getId = function(){
+					console.log('火车');
+				};
+				break;
+				default:
+				break;
+			}
+			return o;
+		}
+
+		var car = new Transition('benz',1.5,'汽车');
+		car.getId();
+		// ***************
+		// ***************
+		// ***************
+		// ***************
+		// ***************
+		// ***************
+		// ***************
+		//*************** 工厂方法模式***************
+
+		// 安全模式类
+
+		var Demo = function(type,size) {
+			if (this instanceof Demo) {
+			}else {
+				return new Demo();
+			}
+		}
+
+		// 安全的工厂模式
+		var Factory = function(type,size) {
+			if (this instanceof Factory) {
+				return new this[type](size);
+			}else {
+				return new Factory(type,size);
+			}
+		}
+		Factory.prototype = {
+			bigFactory : function(size) {
+				var o = new Object();
+				o.size = size;
+				o.comType = 'big';
+				return o;
+			},
+			smallFactory : function(size) {
+				var o = new Object();
+				o.size = size;
+				o.comType = 'small';
+				return o;
+			}
+		}
+
+		var f = Factory('bigFactory',2000);
+		console.log(f);
+	</script>
+</body>
+</html>

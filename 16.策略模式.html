@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 策略模式：
+		// 定义：将定义的的算法封装起来，使其相互之间可以替换。不需要管理状态，状态之间没有依赖关系。
+
+
+		var myStrategy = function () {
+			var strategy = {
+				strategy1:function(arr) {
+					// console.log('使用策略1 '+'参数：'+arr);
+					return 'ssss';
+				},
+				strategy2:function(arr) {
+					console.log('使用策略2 '+'参数：'+arr);
+				},
+				strategy3:function(arr) {
+					console.log('使用策略3 '+'参数：'+arr);
+				},
+				strategy4:function(arr) {
+					console.log('使用策略4 '+'参数：'+arr);
+				}
+			}
+
+			return function(s,arr) {
+				return strategy[s](arr);
+			}
+		}();
+
+		console.log(myStrategy('strategy1','1234'));
+
+	</script>
+</body>
+</html>

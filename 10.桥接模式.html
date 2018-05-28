@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button class="test_btn1">click change</button>
+	<button class="test_btn2">click change <span>this</span> color</button>
+	<script type="text/javascript">
+		// 桥接模式
+		// 定义：在系统沿着多维度的变化时，又不增加其复杂度从而解耦
+		// 简单来讲就是把共同的部分抽象出来，然后将实现和抽象连接起来
+		function changeColor(dom,color) {
+			dom.style.color = color;
+		}
+
+		var test_btn1 = document.getElementsByClassName('test_btn1')[0];
+		var test_btn2 = document.getElementsByClassName('test_btn2')[0];
+		test_btn1.onmouseover = function() {
+			changeColor(this,'green');
+		}
+		test_btn2.onmouseover = function() {
+			changeColor(this.getElementsByTagName('span')[0],'blue');
+		}
+	</script>
+</body>
+</html>

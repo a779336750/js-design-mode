@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+
+		var myObj = (function(){
+			// 静态私有属性
+			var staticPrivateArr = 1;
+			var staticPrivateMethod = function() {
+				console.log('staticPrivateMethod!');
+			}
+
+			function obj(name,id) {
+				// 私有属性
+				var privateArr = 'privateArr';
+				// 私有方法
+				var privateMethod = function() {
+					console.log('privateMethod!');
+				}
+				// 对象共有属性
+				this.name = name;
+				this.id = id;
+				// 特权方法
+				this.getPrivateArr = function() {
+					return privateArr;
+				}
+				this.getStaticPrivateArr = function() {
+					return staticPrivateArr;
+				}
+				// 构造器
+				this.setPrivateArr = function(){}
+
+			}
+
+			obj.prototype = {
+				// 静态共有属性
+				staticPublicArr:'staticPublicArr',
+				staticPublicMethod: function(){
+					console.log('staticPublicMethod!');
+				}
+			}
+			return obj; 
+		})();
+
+		var o = new myObj();
+		console.log(o);
+		console.log(o.getPrivateArr());
+		console.log(o.getStaticPrivateArr());
+
+	</script>
+</body>
+</html>

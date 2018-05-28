@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 单例模式实现静态变量,只能访问不能修改
+		var Conf = (function(){
+			var conf = {
+				name:'haha',
+				id:'121321'
+			}
+			return {
+				get:function() {
+					return conf;
+				}
+			}
+		})();
+		console.log(Conf.get());
+	</script>
+</body>
+</html>

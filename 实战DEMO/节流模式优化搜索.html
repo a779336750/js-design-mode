@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript" src="../../../../../开发/代码复用/js/myJS.js"></script>
+	<input type="" name="" class="search-input">
+	<script type="text/javascript">
+		A('.search-input').on('input', function(e) {
+			A.throttle(getSearchResult);
+		});
+		function getSearchResult() {
+			console.log('结果。。。');			
+		}
+	</script>
+</body>
+</html>

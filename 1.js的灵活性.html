@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		//1. 函数方法
+		Function.prototype.addMethod = function(name,fn) {
+			this[name] = fn;
+			return this;//返回this使其能够链式添加方法
+		}
+		var Methods = function(){};
+		Methods.addMethod('sayHi',function(){
+			console.log('Hi');
+			return this;//链式调用方法
+		}).addMethod('sayHello',function(){
+			console.log('Hello');
+			return this;//链式调用方法
+		});
+		Methods.sayHi().sayHello();
+
+		//2. 为函数添加多个方法
+		Function.prototype.addMethod = function() {
+			var arg = arguments;
+			for (var i = 0; i < arg.length; i+=2) {
+				this[arg[i]] = arg[i+1];
+			}
+			return this;//返回this使其能够链式添加方法
+		}
+		var Methods = function(){};
+		Methods.addMethod('sayHi',function(){
+			console.log('Hi');
+			return this;//链式调用方法
+		},'sayHello',function(){
+			console.log('Hello');
+			return this;//链式调用方法
+		});
+		Methods.sayHi().sayHello();
+
+
+
+		var Methods2 = function() {
+			return {
+				sayHi:function(){
+					console.log('Hi');
+				},
+				sayHello:function(){
+					console.log('hello');
+				},
+			}
+		}
+
+		var methods2 = Methods2();
+		methods2.sayHi();
+
+		// 构造函数方法
+		var Methods3 = function() {
+				this.sayHi = function(){
+					console.log('Hi');
+				};
+				this.sayHello = function(){
+					console.log('hello');
+				};
+		}
+		var methods3 = new Methods3();
+		methods3.sayHi();
+
+
+		// 对象原型方法
+		Function.prototype.addMethod2 = function(name,fn) {
+			this.prototype[name] = fn;
+			return this;//返回this使其能够链式添加方法
+		}
+		var Methods4 = function(){};
+		Methods4.addMethod2('sayHi',function(){
+			console.log('Hi');
+			return this;//链式调用方法
+		}).addMethod2('sayHello',function(){
+			console.log('Hello');
+			return this;//链式调用方法
+		});
+		var m4 = new Methods4();
+		m4.sayHi().sayHello();
+
+
+		Function.prototype.addMethod3 = function(name,fn,isCreatedForProto) {
+			if (isCreatedForProto) {
+				this.prototype[name] = fn;
+				return this;//返回this使其能够链式添加方法
+			}else {
+				this[name] = fn;
+				return this;//返回this使其能够链式添加方法
+			}
+		}
+		var Methods5 = function(){};
+		Methods5.addMethod3('sayHi',function(){
+			console.log('Hi');
+			return this;//链式调用方法
+		},true).addMethod3('sayHello',function(){
+			console.log('Hello');
+			return this;//链式调用方法
+		},false);
+		// var m4 = new Methods5();
+		// console.log(m4);
+		Methods5.prototype.sayHi();
+		Methods5.sayHello();// 为Methods函数用点表示法添加的函数，只能通过Methods类调用
+
+	</script>
+</body>
+</html>

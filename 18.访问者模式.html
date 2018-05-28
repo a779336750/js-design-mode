@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btn">click</button>
+	<!-- 访问者模式 -->
+	<!-- 定义：针对对象结构的元素，在不改变对象的前提下访问结构中元素的新方法 -->
+	<script type="text/javascript">
+		var btn = document.getElementById('btn');
+		function bindEvent(dom,type,fn,data) {
+			dom.addEventListener(type,function(e){
+				fn.call(dom,e,data);
+			});
+		}
+		function f(e,data) {
+			// target = e.target||window.srcElement;
+			console.log(this.innerHTML);
+			console.log(data);
+		}
+		bindEvent(btn,'click',f,'dick');
+
+		// btn.addEventListener('click',function(){
+		// 	fn.call(btn,e,'jason');
+		// });
+
+
+	</script>
+</body>
+</html>

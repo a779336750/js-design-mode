@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>无法显示此页</title>
+
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            function Base() {
+                this.children = [];
+                this.element = null;
+            }
+            Base.prototype.init = function() {
+                throw new Error('请重新编写init函数');
+            };
+            Base.prototype.add = function() {
+                throw new Error('请重新编写add函数');
+            };
+            Base.prototype.getElement = function() {
+                throw new Error('请重新编写getElement函数');
+            };
+
+            function prototypeInherit(obj) {
+                var o = function(){};
+                o.prototype = obj;
+                return new o();
+            }
+
+            function inherit(subType,superType) {
+                var p = prototypeInherit(superType.prototype);
+                p.constructor = subType;
+                subType.prototype = p;
+            }
+            // 创建formItemd对象
+            function FormItem(id,parent) {
+                Base.call(this);
+                this.id = id;
+                this.parent = parent;
+                this.init();
+            }
+            inherit(FormItem,Base);
+            FormItem.prototype.init = function() {
+                this.element = document.createElement('form');
+                this.parent.appendChild(this.element);
+            };
+            FormItem.prototype.add = function(child) {
+                this.children.push(child);
+                this.element.appendChild(child.getElement());
+                return this;
+            };
+            FormItem.prototype.getElement = function() {
+                return this.element;
+            };
+
+            // 创建FieldsetItem对象
+            function FieldsetItem(className) {
+                Base.call(this);
+                this.className = className;
+                this.init();
+            }
+            inherit(FieldsetItem,Base);
+            FieldsetItem.prototype.init = function() {
+                this.element = document.createElement('fieldset');
+                this.element.className = this.className;
+            };
+            FieldsetItem.prototype.add = function(child) {
+                this.children.push(child);
+                this.element.appendChild(child.getElement());
+                return this;
+            };
+            FieldsetItem.prototype.getElement = function() {
+                return this.element;
+            };
+            // 创建group对象
+            function Group(className) {
+                Base.call(this);
+                this.className = className;
+                this.init();
+            }
+            inherit(Group,Base);
+            Group.prototype.init = function() {
+                this.element = document.createElement('div');
+                this.element.className = this.className;
+            };
+            Group.prototype.add = function(child) {
+                this.children.push(child);
+                this.element.appendChild(child.getElement());
+                return this;
+            };
+            Group.prototype.getElement = function() {
+                return this.element;
+            };
+            // 创建legend对象
+            function Legend(className,text) {
+                Base.call(this);
+                this.className = className;
+                this.text = text;
+                this.init();
+            }
+            inherit(Legend,Base);
+            Legend.prototype.init = function() {
+                this.element = document.createElement('legend');
+                var text = document.createTextNode(this.text);
+                this.element.appendChild(text);
+                this.element.className = this.className;
+            };
+            Legend.prototype.add = function() {};
+            Legend.prototype.getElement = function() {
+                return this.element;
+            };
+
+            
+            // 创建legend对象
+            function LabelItem(className,text,for_input) {
+                Base.call(this);
+                this.className = className;
+                this.text = text;
+                this.for_input = for_input;
+                this.init();
+            }
+            inherit(LabelItem,Base);
+            LabelItem.prototype.init = function() {
+                this.element = document.createElement('label');
+                var text = document.createTextNode(this.text);
+                this.element.appendChild(text);
+                this.element.setAttribute('for',this.for_input);
+                this.element.className = this.className;
+            };
+            LabelItem.prototype.add = function() {};
+            LabelItem.prototype.getElement = function() {
+                return this.element;
+            };
+            // 创建textItem对象
+            function TextItem(id,type,placeHolder) {
+                Base.call(this);
+                this.id = id;
+                this.type = type;
+                this.placeHolder = placeHolder;
+                this.init();
+            }
+            inherit(TextItem,Base);
+            TextItem.prototype.init = function() {
+                this.element = document.createElement('input');
+                this.element.id = this.id;
+                this.element.setAttribute('type',this.type);
+                this.element.setAttribute('placeHolder', this.placeHolder);
+            };
+            TextItem.prototype.add = function() {};
+            TextItem.prototype.getElement = function() {
+                return this.element;
+            };
+            // 创建ButtonItem对象
+            function ButtonItem(className,text) {
+                Base.call(this);
+                this.className = className;
+                this.text = text;
+                this.init();
+            }
+            inherit(ButtonItem,Base);
+            ButtonItem.prototype.init = function() {
+                this.element = document.createElement('button');
+                var text = document.createTextNode(this.text);
+                this.element.appendChild(text);
+                this.element.className = this.className;
+            };
+            ButtonItem.prototype.add = function() {};
+            ButtonItem.prototype.getElement = function() {
+                return this.element;
+            };
+            var form = new FormItem('my-form',document.body);
+            form.add(
+                new FieldsetItem('my-fieldset').add(
+                    new Legend('my-lagen','我的表单')
+                ).add(
+                    new Group('my-group').add(
+                        new LabelItem('my-password','密码','my-password')
+                    ).add(
+                        new TextItem('my-password','password','请输入密码')
+                    )
+                ).add(
+                    new Group('my-group').add(
+                        new LabelItem('my-account','账号','my-account')
+                    ).add(
+                        new TextItem('my-account','text','请输入账号')
+                    )
+                ).add(
+                    new ButtonItem('my-button','提交')
+                )
+            ).add(
+                new FieldsetItem('my-fieldset').add(
+                    new Legend('my-lagen','我的表单')
+                ).add(
+                    new Group('my-group').add(
+                        new LabelItem('my-account','账号','my-account')
+                    ).add(
+                        new TextItem('my-account','text','请输入账号')
+                    )
+                ).add(
+                    new ButtonItem('my-button','提交')
+                )
+            );
+        </script>
+
+    </body>
+</html>

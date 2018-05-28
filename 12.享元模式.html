@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<!-- 	享元模式：
+	定义:把相同或者相似的数据和方法提取出来，减少开销，提高性能 -->
+	<div id="news-bar">
+	</div>
+	<button class="next-btn">next</button>
+
+	<script type="text/javascript">
+		function News(title,parent) {
+			this.title = title;
+			this.parent = parent;
+			this.element = null;
+		}
+
+		News.prototype.next = function() {
+			console.log('请重写next函数');
+		}
+		News.prototype.init = function() {
+			console.log('请重写init函数');
+		}
+
+		var NewsItem = function(title,parent) {
+			News.call(this,title,parent);
+			this.init();
+		}
+		NewsItem.prototype = new News();
+		NewsItem.prototype.init = function() {
+			this.element = document.createElement('li');
+			this.element.innerHTML = this.title;
+			this.parent.appendChild(this.element);
+		}
+		NewsItem.prototype.next = function(next_title) {
+			this.element.innerHTML = next_title;
+		}
+
+		var news_bar = document.getElementById('news-bar');
+		var news_list = ['新闻1','新闻2','新闻3','新闻4','新闻5','新闻6','新闻7','新闻8','新闻9','新闻10'];
+		var news_item = [];
+		var next_btn = document.getElementsByClassName('next-btn')[0];
+		var paper = 0;
+		var num = 5;
+		var len = news_list.length;
+		for (var i = 0; i < num; i++) {
+			if (i<len) {
+				news_item[i] = new NewsItem(news_list[i],news_bar,news_list.length);
+			}
+		}
+		var is_end = false;
+		next_btn.onclick = function() {
+			var j = (++paper)*num%len;
+
+			for (var i = 0; i < num&&j!=0; i++) {
+				if (len<num) return;
+				if (!is_end) {
+					if (news_list[i+j]) {
+						news_item[i].next(news_list[i+j]);
+					}else if(i!= 4){
+						news_item[i].next('');
+					}else {
+						news_item[i].next('');
+						is_end = true;
+					}
+				}
+			}
+		}
+
+	</script>
+</body>
+</html>

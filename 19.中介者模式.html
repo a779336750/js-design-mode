@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<!--中介者模式 -->
+	<!-- 定义： -->
+	<script type="text/javascript">
+		var agent = function () {
+			var _message = [];
+			return {
+				register:function(type,fn) {
+					if (!_message[type]) {
+						_message[type] = [];
+						_message[type].push(fn);
+					}else {
+						_message[type].push(fn);
+					}
+				},
+				send:function(type) {
+					if (!_message[type]) {
+						return;
+					}
+					var len = _message[type].length;
+					for (var i = 0; i < len; i++) {
+						_message[type][i]();
+					}
+				}
+			}
+		}();
+
+
+		function f1() {
+			console.log('user1');
+		}
+		function f2() {
+			console.log('user2');
+		}
+		console.log(agent);
+		agent.register('showUser',f1);
+		agent.register('showUser',f2);
+		agent.send('showUser');
+	</script>
+</body>
+</html>

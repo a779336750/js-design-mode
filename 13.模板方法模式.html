@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin:0; padding:0; } 
+	body, button, input, select, textarea { font:12px/1.5tahoma, arial, \5b8b\4f53; } 
+	h1, h2, h3, h4, h5, h6{ font-size:100%; } 
+	address, cite, dfn, em, var { font-style:normal; } 
+	code, kbd, pre, samp { font-family:couriernew, courier, monospace; } 
+	small{ font-size:12px; } 
+	ul, ol { list-style:none; } 
+	a { text-decoration:none; } 
+	a:hover { text-decoration:underline; } 
+	sup { vertical-align:text-top; } 
+	sub{ vertical-align:text-bottom; } 
+	legend { color:#000; } 
+	fieldset, img { border:0; } 
+	button, input, select, textarea { font-size:100%; } 
+	table { border-collapse:collapse; border-spacing:0; }
+
+
+	/*common-style*/
+	.fl {float: left;}
+	.fr {float: right;}
+	.clearfix:after {content: "."; display: block; height:0; clear:both; visibility: hidden;}
+	.clearfix { *zoom:1; }
+		.pannel {
+			width: 500px;
+			height: 200px;
+			-webkit-border-radius: 10px;
+			        border-radius: 10px;
+			border: 1px solid #ADAAAA;
+			-webkit-box-shadow: 5px 5px 5px #ADAAAA;
+			        box-shadow: 5px 5px 5px #ADAAAA;
+			position: relative;
+			text-align: center;
+			-webkit-transform: scale(.8);
+			    -ms-transform: scale(.8);
+			        transform: scale(.8);
+			opacity: 0;
+			-webkit-transition: .4s all ease-in-out;
+			-o-transition: .4s all ease-in-out;
+			transition: .4s all ease-in-out;
+		}
+		.show {
+			-webkit-transform: scale(1);
+			    -ms-transform: scale(1);
+			        transform: scale(1);
+			opacity: 1;
+		}
+		.hide {
+			display: none;
+		}
+		.title {
+			position: absolute;
+			left: 10px;
+			top: 10px;
+			font-size: 20px;
+			line-height: 30px;
+			height: 30px;
+		}
+		.delete_btn {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+			display: inline-block;
+			width: 50px;
+			height: 20px;
+			line-height: 20px;
+			border: none;
+			background-color: #fff;
+		}
+		.content_p {
+			text-align: center;
+			margin-top: 50px;
+		}
+		.confirm_btn,.cancel_btn {
+			display: inline-block;
+			border: none;
+			-webkit-border-radius: 5px;
+			        border-radius: 5px;
+			margin: 0 20px;
+			padding: 0 20px;
+			height: 30px;
+			background-color: #87EAB3;
+			color: #fff;
+			margin-top: 20px;
+		}
+		.cancel_btn {
+			background-color: #FF5050;
+		}
+	</style>
+</head>
+<body>
+
+	<button class="alert">弹出提示框</button>
+	<button class="title-alert">弹出带title的提示框</button>
+	<button class="title-cancel-alert">弹出带title和cancel的提示框</button>
+	<script type="text/javascript">
+		// 模板方法模式：
+		// 定义：父类定义一组操作算法骨架，将一些实现步骤交给子类。使得子类可以不改变父类的算法结构的同时可重新定义算法中的某些实现。
+
+
+		// 模板方法模式实现提示框
+
+		function Alert(data) {
+			// 如果没有数据，则返回，不做任何操作
+			if (!data) {return;}
+			// 创建框架,和各种按钮
+			this.pannel = document.createElement('div');
+			this.confirm_btn = document.createElement('button');
+			this.delete_btn = document.createElement('button');
+			this.content_p = document.createElement('p');
+			// 为各种按钮添加内容
+			this.content_p.innerHTML = data.content;
+			this.confirm_btn.innerHTML = data.confirm;
+			this.delete_btn.innerHTML = '退出';
+			// 为各种按钮添加类名
+			this.pannel.className = 'pannel';
+			this.content_p.className = 'content_p';
+			this.confirm_btn.className = 'confirm_btn';
+			this.delete_btn.className = 'delete_btn';
+			// 定义各种事件
+			this.delete = data.delete;
+			this.success = data.success;
+			this.confirm = data.confirm;
+
+		}
+		Alert.prototype.init = function() {
+			console.log('请重新创建init方法');
+		};
+		Alert.prototype.eventUtil = {
+			cancel:function() {
+			},
+			success:function() {
+				this.success();
+			}
+		};
+		Alert.prototype.hide = function() {
+				this.pannel.className='pannel';
+				var that = this;
+				setTimeout(function() {
+					that.pannel.style.display = 'none';
+				}, 400);							
+		};
+		Alert.prototype.show = function() {
+				var that = this;
+				if (that.pannel.className=='pannel show') return;
+				// 由于JavaScript机制，可能在页面渲染之前就已经添加show了，所以必须等到pannel渲染完以后，业绩是className等于pannel时才添加show
+				that.pannel.style.display = 'block';
+				var interval = setInterval(function(){
+					if (that.pannel.className=='pannel') {
+						that.pannel.className = that.pannel.className+' show';
+						clearInterval(interval);	
+					}
+				},100);
+		};
+		function NormalAlert(data) {
+			Alert.call(this,data);
+			this.init();
+		}
+		NormalAlert.prototype = new Alert();
+		NormalAlert.prototype.init = function() {
+			this.pannel.appendChild(this.delete_btn);
+			this.pannel.appendChild(this.content_p);
+			this.pannel.appendChild(this.confirm_btn);
+			document.body.appendChild(this.pannel);
+			var that = this;
+			this.confirm_btn.onclick = function() {
+				that.success();
+				that.hide();
+			};
+			this.delete_btn.onclick = function() {
+				that.hide();
+			};
+			return this;
+		};
+		function TitleAlert(data) {
+			Alert.call(this,data);
+			this.title = document.createElement('h3');
+			this.title.className = 'title';
+			this.title_content = data.title;
+			this.title.innerHTML = this.title_content;
+			this.init();
+		}
+		TitleAlert.prototype = new Alert();
+		TitleAlert.prototype.init = function() {
+			this.pannel.appendChild(this.title);
+			this.pannel.appendChild(this.delete_btn);
+			this.pannel.appendChild(this.content_p);
+			this.pannel.appendChild(this.confirm_btn);
+			document.body.appendChild(this.pannel);
+
+			var that = this;
+			this.confirm_btn.onclick = function() {
+				that.success();
+				that.hide();
+			}
+			this.delete_btn.onclick = function() {
+				that.hide();
+			}
+		};
+		function CancelTitleAlert(data) {
+			Alert.call(this,data);
+			this.title = document.createElement('h3');
+			this.title.className = 'title';
+			this.title_content = data.title;
+			this.title.innerHTML = this.title_content;
+			this.cancel_btn = document.createElement('button');
+			this.cancel_btn.className = 'cancel_btn';
+			this.cancel_btn_content = data.cancel;
+			this.cancel_btn.innerHTML = this.cancel_btn_content;
+			this.init();
+		}
+		CancelTitleAlert.prototype = new Alert();
+		CancelTitleAlert.prototype.init = function() {
+			this.pannel.appendChild(this.title);
+			this.pannel.appendChild(this.delete_btn);
+			this.pannel.appendChild(this.content_p);
+			this.pannel.appendChild(this.cancel_btn);
+			this.pannel.appendChild(this.confirm_btn);
+			document.body.appendChild(this.pannel);
+
+			var that = this;
+			this.confirm_btn.onclick = function() {
+				that.success();
+				that.hide();
+			}
+			this.delete_btn.onclick	 = function() {
+				that.hide();
+			}
+		};
+
+
+		var alert = document.getElementsByClassName('alert')[0];
+		var title_alert = document.getElementsByClassName('title-alert')[0];
+		var title_cancel_alert = document.getElementsByClassName('title-cancel-alert')[0];
+		var a = new NormalAlert({
+				content:'你好啊',
+				confirm:'好啊',
+
+				success:function() {
+					alert('success');
+				}
+		});
+		var b = new TitleAlert({
+				content:'你好啊',
+				confirm:'好啊',
+				title:'问候',
+				success:function() {
+					alert('success');
+				}
+			});
+		var c = new CancelTitleAlert({
+				content:'你好啊',
+				confirm:'好啊',
+				title:'问候',
+				cancel:'不好',
+				success:function() {
+					alert('success');
+				}
+			});
+		alert.onclick =function() {
+			a.show();
+		}
+		title_alert.onclick =function() {
+			b.show();
+
+		}
+		title_cancel_alert.onclick =function() {
+			c.show();
+
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// function AlertBtn(text) {
+		// 	this.text = text;
+		// 	(function(){
+		// 		var btn = document.createElement('button');
+		// 		btn.innerHTML = 'alert';
+		// 		// var btn_text = document.createTextNode('alert');
+		// 		// btn.appenChild(btn_text);
+		// 		btn.onclick = function() {
+		// 			alert(text);
+		// 		}
+		// 		document.body.appendChild(btn);
+
+		// 	})(text);
+		// }
+		// var btn = new AlertBtn('你好啊');
+
+
+		var btnFactory = function(type,text) {
+			if (this instanceof btnFactory) {
+				return new this[type](text);
+			}else {
+				return new btnFactory(type,text);
+			}
+		}
+		btnFactory.prototype = {
+			alert:function(text) {
+				this.text = text;
+				var that= this;
+				(function(){
+					var btn = document.createElement('button');
+					btn.innerHTML = 'alert';
+					// var btn_text = document.createTextNode('alert');
+					// btn.appenChild(btn_text);
+					btn.onclick = function() {
+						alert(that.text);
+					}
+					document.body.appendChild(btn);
+
+				})(text);
+			},
+			confirm:function(text) {
+				this.text = text;
+				var that= this;
+				this.applyToDoc = function() {
+					var btn = document.createElement('button');
+					btn.innerHTML = 'confirm';
+					// var btn_text = document.createTextNode('alert');
+					// btn.appenChild(btn_text);
+					btn.onclick = function() {
+						confirm(that.text);
+					}
+					document.body.appendChild(btn);
+				}
+			}
+		};
+
+
+		var confirmBtn = new btnFactory('confirm','你确定？');
+		confirmBtn.applyToDoc();
+		confirmBtn.text = '你是傻猪猪吗';
+		var alertBtn = new btnFactory('alert','你好啊');
+	</script>
+</body>
+</html>

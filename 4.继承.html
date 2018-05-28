@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 原型式继承
+		function inheritObject(o) {
+			var obj = function(){};
+			obj.prototype = o;
+			return new obj();
+		}
+
+
+		// 寄生式继承
+		function inheritPrototype(subType,superType) {
+			var p = inheritObject(superType.prototype);
+			p.constructor = subType;
+			subType.prototype = p;
+		}
+
+
+		function superType(name) {
+			this.name = name;
+		}
+
+		superType.prototype.getName = function() {
+			console.log(this.name);
+		}
+
+		function subType(name,id) {
+			this.id = id;
+			superType.call(this,name);
+			this.getId = function() {
+				console.log(this.id);
+			}
+		}
+		inheritPrototype(subType,superType);
+		var o = new subType('dick',12);
+		console.log(o);
+		o.getName();
+		o.getId();
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		// 安全模式：
+		function getBox(type,color) {
+			if (!this instanceof getBox ){
+				return new getBox[type](color); 
+			}else {
+				return new this[type](color);
+			}
+		}
+		// 工厂方法模式：
+		getBox.prototype = {
+			redBox:function(color) {
+				this.box = document.createElement('div');
+				this.box.style.width = '200px';
+				this.box.style.height = '200px';
+				this.box.style.backgroundColor = color;
+			},
+			smallBox:function(color) {
+				this.box = document.createElement('div');
+				this.box.style.width = '100px';
+				this.box.style.height = '100px';
+				this.box.style.backgroundColor = color;
+			}
+		}
+		redBox = new getBox('redBox','red');
+		smallBox = new getBox('smallBox','green');
+		document.body.appendChild(redBox.box);
+		document.body.appendChild(smallBox.box);
+	</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		ul {
+			padding: 0;
+			margin: 0;	
+		}
+		#imgLoop,#imgLoop2 {
+			font-size: 0;
+			list-style: none;
+			width: 520px;
+			height: 280px;
+			overflow: hidden;
+			position: relative;
+		}
+		#imgLoop ul {
+			display: flex;
+
+		}
+		#imgLoop2 ul {
+			position: relative;
+		}
+		#imgLoop2 ul li {
+			position: absolute;
+			left: 0;
+			top: 0;
+			transition: all .4s ease-in-out;
+		}
+		.img-wraper {
+			transition: .4s all ease-in-out;
+		}
+		.control-wraper {
+			position: absolute;
+			right: 20px;
+			bottom: 10px;
+		}
+		.control-wraper li {
+			background-color: #fff;
+			display: inline-block;
+			width:15px;
+			height: 15px;
+			border-radius: 50%;
+			margin: 0 10px;
+		}
+		.control-wraper li.active {
+			width:20px;
+			height: 20px;
+			background-color: #000;
+		}			
+	</style>
+</head>
+<body>
+	<div id="imgLoop">
+		
+	</div>
+
+	<div id="imgLoop2">
+		
+	</div>
+
+	<script type="text/javascript">
+		function Imgloop(container,imgArr) {
+			this.imgWraper = null;
+			this.control_wraper = null;
+			this.container = container;
+			this.imgArr = imgArr;
+			this.stopLoop = false;
+			this.index = 0;
+			this.init();
+			this.imgWidth = this.container.offsetWidth;
+		}
+		Imgloop.prototype = {
+			init:function() {
+				var ul = document.createElement('ul'),
+					ol = document.createElement('ol'),
+					len = this.imgArr.length,
+					liArr = [];
+				for (var i = 0; i < len; i++) {
+					var li = document.createElement('li');
+					li.appendChild(this.imgArr[i]);
+					ul.appendChild(li);
+					var ol_li = document.createElement('li');
+					if (i == 0) {
+						ol_li.setAttribute('class','active');
+					}
+					ol.appendChild(ol_li);
+				}
+				ul.setAttribute('class','img-wraper');
+				ol.setAttribute('class','control-wraper');
+				this.imgWraper = ul;
+				this.control_wraper = ol;
+				this.container.appendChild(ul);
+				this.container.appendChild(ol);
+				this.autoLoop();
+				this.hoverLoop();
+			},
+			autoLoop:function() {
+				var that = this;
+				setInterval(function(){
+					if (!that.stopLoop) {
+						that.nextImage();
+					}
+				},3000);
+			},
+			nextImage:function() {},
+			hoverLoop:function() {},
+			goToImage:function() {}
+		}
+
+		function prototypeInherit(sup) {
+			var o = function(){};
+			o.prototype = sup;
+			return new o();
+		}
+
+		function inherit(sub,sup) {
+			var p = prototypeInherit(sup.prototype);
+			p.constructor = sub;
+			sub.prototype = p;
+		}
+		// 寄生式继承
+		inherit(SlideLoop,Imgloop);
+		// 中介者者模式
+		var agent = function () {
+			var _message = [];
+			var splice = [].splice;
+			return {
+				register:function(type,fn) {
+					if (!_message[type]) {
+						_message[type] = [];
+						_message[type].push(fn);
+					}else {
+						_message[type].push(fn);
+					}
+				},
+				send:function(type) {
+					if (!_message[type]) {
+						return;
+					}
+					var args = splice.call(arguments,1);
+					var len = _message[type].length;
+					for (var i = 0; i < len; i++) {
+						_message[type][i](args);
+					}
+				}
+			}
+		}();
+
+
+		// 滑动版
+		function SlideLoop(container,imgArr) {
+			Imgloop.call(this,container,imgArr);
+			var that = this;
+			agent.register('slideLoop',function(index){
+				var ollis = that.control_wraper.getElementsByTagName('li');
+				for (var i = 0; i < ollis.length; i++) {
+					ollis[i].setAttribute('class','')
+				}
+				ollis[index].setAttribute('class','active');
+
+			});
+		}
+		SlideLoop.prototype.hoverLoop = function(){
+			var that = this;
+			this.container.onmouseover = function(e) {
+				var event = e||window.event;
+				var target = event.target||window.srcElement;
+				if (target.tagName.toLowerCase() == 'img'||target.className == 'active') {
+					that.stopLoop = true;
+				}
+			}
+			this.container.onmouseleave = function() {
+				that.stopLoop = false;
+			};
+			var control_li_list = this.control_wraper.getElementsByTagName('li');
+			for (var i = 0; i < control_li_list.length; i++) {
+				control_li_list[i].onmouseover = function(num) {
+					return function() {
+						that.index = num;
+						that.goToImage();					}
+				}(i);
+			}
+		};
+		SlideLoop.prototype.nextImage = function() {
+				var len = this.imgArr.length;
+				if (++this.index >= len) {
+					this.index = 0;
+				}
+				this.goToImage();
+		};
+		SlideLoop.prototype.goToImage = function() {
+				this.imgWraper.style.transform = 'translateX(-'+this.imgWidth*this.index+'px)';
+				agent.send('slideLoop',this.index);
+		};
+		// 渐变版
+		// 寄生式继承
+		inherit(OpacityLoop,Imgloop);
+		function OpacityLoop(container,imgArr) {
+			Imgloop.call(this,container,imgArr);
+			var that = this;
+			agent.register('opacityLoop',function(index){
+				var ollis = that.control_wraper.getElementsByTagName('li');
+				for (var i = 0; i < ollis.length; i++) {
+					ollis[i].setAttribute('class','')
+				}
+				ollis[index].setAttribute('class','active');
+
+			});
+		}
+		OpacityLoop.prototype.hoverLoop = function(){
+			var that = this;
+			this.container.onmouseover = function(e) {
+				var event = e||window.event;
+				var target = event.target||window.srcElement;
+				if (target.tagName.toLowerCase() == 'img'||target.className == 'active') {
+					that.stopLoop = true;
+				}
+			}
+			this.container.onmouseleave = function() {
+				that.stopLoop = false;
+			};
+			var control_li_list = this.control_wraper.getElementsByTagName('li');
+			for (var i = 0; i < control_li_list.length; i++) {
+				control_li_list[i].onmouseover = function(num) {
+					return function() {
+						that.index = num;
+						that.goToImage();					}
+				}(i);
+			}
+		};
+		OpacityLoop.prototype.nextImage = function() {
+				var len = this.imgArr.length;
+				if (++this.index >= len) {
+					this.index = 0;
+				}
+				this.goToImage();
+		};
+		OpacityLoop.prototype.goToImage = function() {
+				var imgList = this.imgWraper.getElementsByTagName('li');
+				for (var i = 0; i < imgList.length; i++) {
+					imgList[i].style.opacity = 0;
+				}
+				imgList[this.index].style.opacity = 1;
+				agent.send('opacityLoop',this.index);
+		};
+
+
+
+		// 创建图片列表
+		var imgLoop_container = document.getElementById('imgLoop');
+		var imgLoop_container2 = document.getElementById('imgLoop2');
+		var imgArr = [];
+		for (var i = 0; i < 3; i++) {
+			imgArr[i] = document.createElement('img');
+			imgArr[i].src = 'img'+(i+1)+'.jpg';
+		}
+		var imgArr2 = [];
+		for (var i = 0; i < 3; i++) {
+			imgArr2[i] = document.createElement('img');
+			imgArr2[i].src = 'img'+(i+1)+'.jpg';
+		}
+		// 创建轮播图对象
+		// 所需参数:
+		// imgArr:轮播图片的数组
+		// container:轮播的容器
+		var imgloop = new SlideLoop(imgLoop_container,imgArr);
+		var imgloop2 = new OpacityLoop(imgLoop_container2,imgArr2);
+	</script>
+</body>
+</html>
